@@ -1,0 +1,57 @@
+2024-12-22 18:31:31,828 DEBUG: v3.58.0 (pip), CPython 3.12.3 on Linux-6.8.0-51-generic-x86_64-with-glibc2.39
+2024-12-22 18:31:31,828 DEBUG: command: /home/putin/Desktop/mlops-project/chiendd226/bin/dvc push -v
+2024-12-22 18:31:33,708 DEBUG: failed to load ('77', 'd53ac56bc223c67c3a41e9b29e6082.dir') from storage gdrive (1roo0st6AR4T43u8TQjf_1n7TrSlIS9Ua/files/md5) - [Errno 2] No such file or directory: '1roo0st6AR4T43u8TQjf_1n7TrSlIS9Ua/files/md5/77/d53ac56bc223c67c3a41e9b29e6082.dir'
+Traceback (most recent call last):
+  File "/home/putin/Desktop/mlops-project/chiendd226/lib/python3.12/site-packages/dvc_data/index/index.py", line 611, in _load_from_storage
+    _load_from_object_storage(trie, entry, storage)
+  File "/home/putin/Desktop/mlops-project/chiendd226/lib/python3.12/site-packages/dvc_data/index/index.py", line 547, in _load_from_object_storage
+    obj = Tree.load(storage.odb, root_entry.hash_info, hash_name=storage.odb.hash_name)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/putin/Desktop/mlops-project/chiendd226/lib/python3.12/site-packages/dvc_data/hashfile/tree.py", line 193, in load
+    with obj.fs.open(obj.path, "r") as fobj:
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/putin/Desktop/mlops-project/chiendd226/lib/python3.12/site-packages/dvc_objects/fs/base.py", line 324, in open
+    return self.fs.open(path, mode=mode, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/putin/Desktop/mlops-project/chiendd226/lib/python3.12/site-packages/fsspec/spec.py", line 1291, in open
+    self.open(
+  File "/home/putin/Desktop/mlops-project/chiendd226/lib/python3.12/site-packages/fsspec/spec.py", line 1303, in open
+    f = self._open(
+        ^^^^^^^^^^^
+  File "/home/putin/Desktop/mlops-project/chiendd226/lib/python3.12/site-packages/pydrive2/fs/spec.py", line 608, in _open
+    item_id = self._get_item_id(path)
+              ^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/putin/Desktop/mlops-project/chiendd226/lib/python3.12/site-packages/pydrive2/fs/spec.py", line 379, in _get_item_id
+    raise FileNotFoundError(errno.ENOENT, os.strerror(errno.ENOENT), path)
+FileNotFoundError: [Errno 2] No such file or directory: '1roo0st6AR4T43u8TQjf_1n7TrSlIS9Ua/files/md5/77/d53ac56bc223c67c3a41e9b29e6082.dir'
+
+2024-12-22 18:31:33,711 DEBUG: failed to load ('77', 'd53ac56bc223c67c3a41e9b29e6082.dir') from storage local (/home/putin/Desktop/mlops-project/.dvc/cache/files/md5) - [Errno 2] No such file or directory: '/home/putin/Desktop/mlops-project/.dvc/cache/files/md5/77/d53ac56bc223c67c3a41e9b29e6082.dir'
+Traceback (most recent call last):
+  File "/home/putin/Desktop/mlops-project/chiendd226/lib/python3.12/site-packages/dvc_data/index/index.py", line 611, in _load_from_storage
+    _load_from_object_storage(trie, entry, storage)
+  File "/home/putin/Desktop/mlops-project/chiendd226/lib/python3.12/site-packages/dvc_data/index/index.py", line 547, in _load_from_object_storage
+    obj = Tree.load(storage.odb, root_entry.hash_info, hash_name=storage.odb.hash_name)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/putin/Desktop/mlops-project/chiendd226/lib/python3.12/site-packages/dvc_data/hashfile/tree.py", line 193, in load
+    with obj.fs.open(obj.path, "r") as fobj:
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/putin/Desktop/mlops-project/chiendd226/lib/python3.12/site-packages/dvc_objects/fs/base.py", line 324, in open
+    return self.fs.open(path, mode=mode, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/putin/Desktop/mlops-project/chiendd226/lib/python3.12/site-packages/dvc_objects/fs/local.py", line 131, in open
+    return open(path, mode=mode, encoding=encoding)  # noqa: SIM115
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+FileNotFoundError: [Errno 2] No such file or directory: '/home/putin/Desktop/mlops-project/.dvc/cache/files/md5/77/d53ac56bc223c67c3a41e9b29e6082.dir'
+
+2024-12-22 18:31:33,716 DEBUG: Preparing to transfer data from '/home/putin/Desktop/mlops-project/.dvc/cache/files/md5' to 'gdrive://1roo0st6AR4T43u8TQjf_1n7TrSlIS9Ua/files/md5'
+2024-12-22 18:31:33,716 DEBUG: Preparing to collect status from '1roo0st6AR4T43u8TQjf_1n7TrSlIS9Ua/files/md5'
+2024-12-22 18:31:33,717 DEBUG: Collecting status from '1roo0st6AR4T43u8TQjf_1n7TrSlIS9Ua/files/md5'
+2024-12-22 18:31:33,719 DEBUG: Querying 1 oids via object_exists
+2024-12-22 18:31:35,559 DEBUG: Estimated remote size: 256 files
+2024-12-22 18:31:35,560 DEBUG: Querying 2 oids via traverse
+2024-12-22 18:31:36,290 DEBUG: Preparing to collect status from '/home/putin/Desktop/mlops-project/.dvc/cache/files/md5'
+2024-12-22 18:31:36,290 DEBUG: Collecting status from '/home/putin/Desktop/mlops-project/.dvc/cache/files/md5'
+Everything is up to date.
+2024-12-22 18:31:36,301 DEBUG: Analytics is enabled.
+2024-12-22 18:31:36,350 DEBUG: Trying to spawn ['daemon', 'analytics', '/tmp/tmpzxg2634g', '-v']
+2024-12-22 18:31:36,358 DEBUG: Spawned ['daemon', 'analytics', '/tmp/tmpzxg2634g', '-v'] with pid 266812
