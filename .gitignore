@@ -1,0 +1,21 @@
+# Ignore data and models
+data/
+models/
+results/
+chiendd226/
+
+
+# Ignore logs
+logs/
+*.log
+
+# Ignore Python cache files
+__pycache__/
+*.pyc
+*.pyo
+
+# Ignore system files
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
