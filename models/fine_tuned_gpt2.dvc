@@ -1,0 +1,6 @@
+outs:
+- md5: 77d53ac56bc223c67c3a41e9b29e6082.dir
+  size: 499231764
+  nfiles: 7
+  hash: md5
+  path: fine_tuned_gpt2
