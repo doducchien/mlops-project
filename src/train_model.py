@@ -3,7 +3,7 @@ from torch.utils.data import Dataset
 import os
 import json
 
-MODEL_SAVE_PATH = os.path.join("models", "fine_tuned_gpt2")
+MODEL_SAVE_PATH = "models/fine_tuned_gpt2"
 
 class CustomDataset(Dataset):
     def __init__(self, encodings):
