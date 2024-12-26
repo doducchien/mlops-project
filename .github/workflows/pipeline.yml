@@ -28,8 +28,6 @@ jobs:
           pip install -r requirements.txt
           python -m pip show prefect  # Kiểm tra Prefect đã được cài đặt
 
-      # Bước 3: Chạy file pipeline.yaml
-      - name: Run Prefect pipeline
+      - name: Run Pipeline
         run: |
-          prefect deployment apply src/pipeline.yaml
-          prefect agent start
+          python src/pipeline.yaml
