@@ -31,6 +31,5 @@ jobs:
       # Bước 3: Chạy file pipeline.yaml
       - name: Run Prefect pipeline
         run: |
-          prefect deployment build src/pipeline.yaml:main_pipeline --name "MLOps Pipeline"
-          prefect deployment apply main_pipeline-deployment.yaml
+          prefect deployment apply src/pipeline.yaml
           prefect agent start
