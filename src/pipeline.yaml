@@ -5,7 +5,7 @@ flows:
 
     tasks:
       # Task 1: Kiểm tra thay đổi dữ liệu bằng DVC
-      - name: Check Data Changes
+      - name: check_data
         description: Check if data or models have changed using DVC.
         commands:
           - |
@@ -17,7 +17,7 @@ flows:
             fi
 
       # Task 2: Fine-Tune GPT-2 Model (chỉ chạy khi có trigger)
-      - name: Fine-Tune Model
+      - name: fine_tune_model
         description: Fine-tune GPT-2 model only if changes are detected.
         conditions:
           - exists: proceed_to_fine_tune  # Chỉ chạy nếu file trigger tồn tại
@@ -30,14 +30,14 @@ flows:
           - dvc push
 
       # Task 3: Deploy Fine-Tuned Model API
-      - name: Deploy API
+      - name: deploy_api
         description: Build and deploy the fine-tuned GPT-2 model as an API using Docker.
         commands:
           - docker build -t gpt2-api .
           - docker run -d -p 8000:8000 gpt2-api
 
       # Task 4: Monitor Model Performance
-      - name: Monitor Model
+      - name: monitor_model
         description: Monitor the deployed model and log performance metrics.
         commands:
           - python src/monitoring.py
