@@ -29,4 +29,4 @@ jobs:
 
       - name: Run Pipeline
         run: |
-          dvc repro src/pipeline.yaml
+          dvc repro src/dvc.yaml
