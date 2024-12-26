@@ -5,3 +5,4 @@ fastapi
 uvicorn
 prefect
 dvc[gdrive]
+requirements
