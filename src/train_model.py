@@ -22,6 +22,7 @@ class CustomDataset(Dataset):
 def fine_tune_model(processed_data_path):
     print("Fine-tuning GPT-2...")
     with open(processed_data_path, "r") as f:
+        print("dittttttttt")
         processed_data = json.load(f)
 
     tokenizer = GPT2Tokenizer.from_pretrained("gpt2")
