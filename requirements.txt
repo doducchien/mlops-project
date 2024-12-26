@@ -1,7 +1,7 @@
-datasets
 transformers
 torch
+datasets
+fastapi
+uvicorn
 prefect
-dvc
-pytest
-flake8
+dvc[gdrive]

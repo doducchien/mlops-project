@@ -1,66 +1,49 @@
-name: MLOps CI/CD Pipeline
+name: MLOps Pipeline Workflow
 
 on:
   push:
     branches:
-      - main
+      - main  # Kích hoạt khi có thay đổi trên nhánh main
   pull_request:
     branches:
-      - main
+      - main  # Kích hoạt khi có pull request vào nhánh main
+  schedule:
+    - cron: "0 0 * * *"  # Chạy tự động hàng ngày vào 0h
 
 jobs:
-  test:
-    name: Run Tests
+  run_pipeline:
+    name: Run MLOps Pipeline
     runs-on: ubuntu-latest
 
     steps:
-    - name: Checkout repository
-      uses: actions/checkout@v3
+      # Bước 1: Checkout mã nguồn
+      - name: Checkout repository
+        uses: actions/checkout@v3
 
-    - name: Set up Python 3.9
-      uses: actions/setup-python@v4
-      with:
-        python-version: 3.9
+      # Bước 2: Thiết lập Python
+      - name: Set up Python
+        uses: actions/setup-python@v3
+        with:
+          python-version: "3.9"
 
-    - name: Install dependencies
-      run: |
-        python -m pip install --upgrade pip
-        pip install -r requirements.txt
+      # Bước 3: Cài đặt các thư viện cần thiết
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
 
-    - name: Run linter
-      run: |
-        pip install flake8
-        flake8 src/
+      # Bước 4: Thiết lập DVC và kết nối remote
+      - name: Configure DVC
+        run: |
+          dvc remote add -d myremote gdrive://path-to-your-project
+          dvc remote modify myremote gdrive_service_account_json_file_path data/ggdrive/credentials.json
 
-    - name: Run unit tests
-      run: |
-        pip install pytest
-        pytest tests/
+      # Bước 5: Chạy pipeline Prefect
+      - name: Run Prefect pipeline
+        run: |
+          python src/mlops_pipeline.py
 
-  deploy:
-    name: Deploy Pipeline
-    needs: test
-    runs-on: ubuntu-latest
-    if: github.ref == 'refs/heads/main'
-
-    steps:
-    - name: Checkout repository
-      uses: actions/checkout@v3
-
-    - name: Set up Python 3.9
-      uses: actions/setup-python@v4
-      with:
-        python-version: 3.9
-
-    - name: Install dependencies
-      run: |
-        python -m pip install --upgrade pip
-        pip install -r requirements.txt
-
-    - name: Run MLOps pipeline
-      run: |
-        python src/mlops_data_pipeline.py
-
-    - name: Push to DVC remote
-      run: |
-        dvc push
+      # Bước 6: Đẩy dữ liệu và mô hình lên remote storage
+      - name: Push data and model to remote
+        run: |
+          dvc push

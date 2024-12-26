@@ -1,0 +1,91 @@
+project_name: MLOps GPT-2
+
+description: >
+  Một dự án MLOps triển khai mô hình GPT-2, bao gồm các bước xử lý dữ liệu,
+  fine-tune mô hình, quản lý phiên bản với DVC, tự động hóa pipeline với Prefect,
+  và triển khai mô hình thành API.
+
+steps:
+  - name: data_processing
+    description: "Tải và xử lý dữ liệu đầu vào."
+    commands:
+      - "python src/data_processing.py"
+    outputs:
+      - "data/processed_data.json"
+    version_control:
+      tool: dvc
+      track_files:
+        - "data/raw_data.json"
+        - "data/processed_data.json"
+
+  - name: model_training
+    description: "Fine-tune mô hình GPT-2 trên dữ liệu đã xử lý."
+    dependencies:
+      - "data_processing"
+    commands:
+      - "python src/train_model.py"
+    outputs:
+      - "models/fine_tuned_gpt2/"
+    version_control:
+      tool: dvc
+      track_files:
+        - "models/fine_tuned_gpt2/"
+
+  - name: versioning_and_tracking
+    description: "Theo dõi dữ liệu và mô hình với DVC, đẩy lên remote storage."
+    dependencies:
+      - "data_processing"
+      - "model_training"
+    commands:
+      - "dvc add data/processed_data.json"
+      - "dvc add models/fine_tuned_gpt2/"
+      - "git add data/processed_data.json.dvc models/fine_tuned_gpt2.dvc"
+      - "git commit -m 'Track processed data and fine-tuned model with DVC'"
+      - "dvc push"
+
+  - name: automation_with_prefect
+    description: "Xây dựng và tự động hóa pipeline với Prefect."
+    dependencies:
+      - "data_processing"
+      - "model_training"
+    commands:
+      - "prefect deployment create prefect_pipeline.yaml"
+      - "prefect deployment run mlops_pipeline/mlops_pipeline"
+
+  - name: deployment
+    description: "Triển khai mô hình GPT-2 thành API với FastAPI và Docker."
+    dependencies:
+      - "model_training"
+    commands:
+      - "docker build -t gpt2-api ."
+      - "docker run -p 8000:8000 gpt2-api"
+    endpoints:
+      - url: "http://localhost:8000/predict"
+        method: "POST"
+        description: "API endpoint để dự đoán văn bản."
+
+  - name: monitoring_and_maintenance
+    description: "Theo dõi hiệu suất mô hình và bảo trì định kỳ."
+    dependencies:
+      - "deployment"
+    commands:
+      - "python src/monitoring.py"
+      - "prefect deployment run monitoring_pipeline"
+
+infrastructure:
+  version_control:
+    tool: git
+    repository: "https://github.com/your-org/mlops-gpt2-project"
+  storage:
+    tool: gdrive
+    remote_path: "gdrive://path-to-your-project"
+  orchestration:
+    tool: prefect
+    server: "http://localhost:4200"
+
+schedule:
+  data_processing: "0 0 * * *"  # Chạy hàng ngày
+  model_training: "0 1 * * *"  # Chạy sau khi xử lý dữ liệu
+  deployment: "0 3 * * *"      # Chạy sau khi huấn luyện
+  monitoring_and_maintenance: "*/30 * * * *"  # Theo dõi mỗi 30 phút
+
