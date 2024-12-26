@@ -40,16 +40,14 @@ jobs:
           if [[ -f "proceed_to_fine_tune" ]]; then
             echo "Fine-tuning the model..."
             python src/train_model.py
-            # dvc add models/fine_tuned_gpt2
-            # git add models/fine_tuned_gpt2.dvc
-            # git commit -m "Fine-tuned GPT-2 model updated with DVC"
-            # git push origin main
-            # dvc push
+
           else
             echo "Skipping fine-tune as no trigger file exists."
           fi
       - name: dvc
         run: |
+          git config user.email "chiendd226@gmail.com"
+          git config user.name "beethoven"
           dvc add models/fine_tuned_gpt2
           git add models/fine_tuned_gpt2.dvc
           git commit -m "Fine-tuned GPT-2 model updated with DVC"
