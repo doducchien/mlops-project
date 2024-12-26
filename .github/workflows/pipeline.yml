@@ -1,17 +1,15 @@
-name: MLOps Pipeline Workflow
+name: MLOps Pipeline
 
 on:
   push:
     branches:
-      - main  # Kích hoạt khi có thay đổi trên nhánh main
+      - main  # Chạy khi có thay đổi trên nhánh main
   pull_request:
     branches:
-      - main  # Kích hoạt khi có pull request vào nhánh main
-  schedule:
-    - cron: "0 0 * * *"  # Chạy tự động hàng ngày vào 0h
+      - main  # Chạy khi có pull request vào main
 
 jobs:
-  run_pipeline:
+  pipeline:
     name: Run MLOps Pipeline
     runs-on: ubuntu-latest
 
@@ -20,30 +18,18 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v3
 
-      # Bước 2: Thiết lập Python
-      - name: Set up Python
+      # Bước 2: Cài đặt Python và các thư viện
+      - name: Set up Python environment
         uses: actions/setup-python@v3
         with:
           python-version: "3.12"
+          run: |
+            python -m pip install --upgrade pip
+            pip install -r requirements.txt
 
-      # Bước 3: Cài đặt các thư viện cần thiết
-      - name: Install dependencies
+      # Bước 3: Chạy file pipeline.yaml
+      - name: Run Pipeline
         run: |
-          python -m pip install --upgrade pip
-          pip install -r requirements.txt
-
-      # Bước 4: Thiết lập DVC và kết nối remote
-      - name: Configure DVC
-        run: |
-          dvc remote add -d myremote gdrive://path-to-your-project
-          dvc remote modify myremote gdrive_service_account_json_file_path data/ggdrive/credentials.json
-
-      # Bước 5: Chạy pipeline Prefect
-      - name: Run Prefect pipeline
-        run: |
-          python src/mlops_pipeline.py
-
-      # Bước 6: Đẩy dữ liệu và mô hình lên remote storage
-      - name: Push data and model to remote
-        run: |
-          dvc push
+          prefect deployment build src/pipeline.yaml:main_pipeline --name "MLOps Pipeline"
+          prefect deployment apply main_pipeline-deployment.yaml
+          prefect agent start

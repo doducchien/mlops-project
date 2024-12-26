@@ -2,7 +2,7 @@ from prefect import flow
 from src.data_processing import fetch_dataset, preprocess_data
 from src.train_model import fine_tune_model
 from src.api import deploy_model
-from src.utils import track_with_dvc
+from src.util import track_with_dvc
 
 @flow
 def mlops_pipeline():
