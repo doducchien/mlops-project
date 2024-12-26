@@ -1,12 +1,10 @@
 import json
 import os
 from datasets import load_dataset
-from prefect import task
 
 RAW_DATA_PATH = "data/raw_data.json"
 PROCESSED_DATA_PATH = "data/processed_data.json"
 
-@task
 def fetch_dataset():
     print("Fetching dataset...")
     dataset = load_dataset("wikitext", "wikitext-103-v1")
@@ -16,7 +14,6 @@ def fetch_dataset():
     print(f"Dataset saved to {RAW_DATA_PATH}")
     return RAW_DATA_PATH
 
-@task
 def preprocess_data(raw_data_path):
     print("Preprocessing data...")
     with open(raw_data_path, "r") as f:

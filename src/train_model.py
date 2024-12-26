@@ -2,7 +2,6 @@ from transformers import GPT2LMHeadModel, GPT2Tokenizer, Trainer, TrainingArgume
 from torch.utils.data import Dataset
 import os
 import json
-from prefect import task
 
 MODEL_SAVE_PATH = "models/fine_tuned_gpt2"
 
@@ -16,7 +15,6 @@ class CustomDataset(Dataset):
     def __getitem__(self, idx):
         return {key: val[idx] for key, val in self.encodings.items()}
 
-@task
 def fine_tune_model(processed_data_path):
     print("Fine-tuning GPT-2...")
     with open(processed_data_path, "r") as f:

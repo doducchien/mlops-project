@@ -1,10 +1,8 @@
-from prefect import flow
 from src.data_processing import fetch_dataset, preprocess_data
 from src.train_model import fine_tune_model
 from src.api import deploy_model
 from src.util import track_with_dvc
 
-@flow
 def mlops_pipeline():
     # Bước 1: Tải dữ liệu
     raw_data_path = fetch_dataset()
@@ -22,4 +20,5 @@ def mlops_pipeline():
     deploy_model()
 
 if __name__ == "__main__":
-    mlops_pipeline()
+    # mlops_pipeline()
+    print("ok")

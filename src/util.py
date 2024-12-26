@@ -1,7 +1,5 @@
 import subprocess
-from prefect import task
 
-@task
 def track_with_dvc(data_path, model_path):
     print("Tracking files with DVC...")
     subprocess.run(["dvc", "add", data_path], check=True)
