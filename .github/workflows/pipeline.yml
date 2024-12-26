@@ -1,9 +1,10 @@
-name: Run Pipeline
-
 on:
   push:
     branches:
       - main
+  schedule:
+    # Chạy hàng ngày lúc 2:00 sáng UTC
+    - cron: "0 2 * * *"
 
 jobs:
   run-pipeline:
@@ -15,7 +16,7 @@ jobs:
       - name: Set up Python
         uses: actions/setup-python@v4
         with:
-          python-version: 3.9
+          python-version: 3.12
 
       - name: Install dependencies
         run: |
@@ -25,41 +26,48 @@ jobs:
 
       - name: Execute Pipeline Tasks
         run: |
-          flows:
-            main_pipeline:
-              name: Main Pipeline
-              description: Full pipeline for MLOps including triggers, fine-tuning, and deployment.
+          # Task 1: Check Data
+          if [[ $(dvc status) != "Data and pipelines are up to date." ]]; then
+            echo "Data has changed. Proceeding to fine-tune."
+            touch proceed_to_fine_tune
+          else
+            echo "No changes in data. Skipping fine-tune."
+          fi
 
-              tasks:
-                - name: check_data
-                  description: Check if data or models have changed using DVC.
-                  commands:
-                    - if [[ $(dvc status) != "Data and pipelines are up to date." ]]; then
-                        echo "Data has changed. Proceeding to fine-tune."
-                        touch proceed_to_fine_tune
-                      else
-                        echo "No changes in data. Skipping fine-tune."
-                      fi
+          # Task 2: Fine-Tune Model
+          if [[ -f "proceed_to_fine_tune" ]]; then
+            echo "Fine-tuning the model..."
+            python src/train_model.py
+            dvc add models/fine_tuned_gpt2
+            git add models/fine_tuned_gpt2.dvc
+            git commit -m "Fine-tuned GPT-2 model updated with DVC"
+            git push origin main
+            dvc push
+          else
+            echo "Skipping fine-tune as no trigger file exists."
+          fi
 
-                - name: fine_tune_model
-                  description: Fine-tune GPT-2 model only if changes are detected.
-                  conditions:
-                    exists: proceed_to_fine_tune  # Run only if the trigger file exists
-                  commands:
-                    - python src/train_model.py
-                    - dvc add models/fine_tuned_gpt2
-                    - git add models/fine_tuned_gpt2.dvc
-                    - git commit -m "Fine-tuned GPT-2 model updated with DVC"
-                    - git push origin main
-                    - dvc push
+  deploy-api:
+    needs: run-pipeline
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v3
 
-                - name: deploy_api
-                  description: Build and deploy the fine-tuned GPT-2 model as an API using Docker.
-                  commands:
-                    - docker build -t gpt2-api .
-                    - docker run -d -p 8000:8000 gpt2-api
+      - name: Build and Deploy API
+        run: |
+          echo "Building and deploying API..."
+          docker build -t gpt2-api .
+          docker run -d -p 8000:8000 gpt2-api
 
-                - name: monitor_model
-                  description: Monitor the deployed model and log performance metrics.
-                  commands:
-                    - python src/monitoring.py
+  monitor-model:
+    needs: deploy-api
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v3
+
+      - name: Monitor Model
+        run: |
+          echo "Monitoring the model..."
+          python src/monitoring.py
