@@ -39,7 +39,7 @@ jobs:
         HEROKU_API_KEY: ${{ secrets.HEROKU_API_KEY }}
       run: |
         echo $HEROKU_API_KEY | docker login --username=_ --password-stdin registry.heroku.com
-        
+
     - name: Set Heroku Stack  
       run: heroku stack:set container -a ${{ secrets.HEROKU_APP_NAME }}
       env:
@@ -51,9 +51,10 @@ jobs:
         docker build -t registry.heroku.com/${{ secrets.HEROKU_APP_NAME }}/web .
         docker push registry.heroku.com/${{ secrets.HEROKU_APP_NAME }}/web
 
-    # Bước 7: Release App on Heroku
+      # Bước 8: Release App on Heroku
     - name: Release API on Heroku
       env:
         HEROKU_API_KEY: ${{ secrets.HEROKU_API_KEY }}
       run: |
-        heroku container:release web --app ${{ secrets.HEROKU_APP_NAME }}
+        heroku stack:set container -a ${{ secrets.HEROKU_APP_NAME }}
+        heroku container:release web -a ${{ secrets.HEROKU_APP_NAME }}
