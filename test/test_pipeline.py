@@ -1,5 +1,5 @@
 import pytest
-from mlops_pipeline import preprocess_data
+from mlops_pipeline1 import preprocess_data
 
 def test_preprocess_data():
     raw_data = ["This is a [test] sample!", "Another example..."]

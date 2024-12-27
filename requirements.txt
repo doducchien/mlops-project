@@ -3,4 +3,5 @@ torch
 datasets
 fastapi
 uvicorn
+prefect
 dvc[gdrive]

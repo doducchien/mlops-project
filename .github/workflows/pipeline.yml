@@ -1,51 +1,55 @@
-name: Deploy API on Model Change
+name: Deploy API on Heroku
 
 on:
   push:
     branches:
-      - main  # Chạy workflow khi có thay đổi trên nhánh main
+      - main
+    paths:
+      - models/fine_tuned_gpt2.dvc  # Trigger khi model thay đổi
 
 jobs:
   deploy-api:
+    name: Deploy API to Heroku
     runs-on: ubuntu-latest
 
     steps:
-      # Bước 1: Clone mã nguồn
+      # Bước 1: Checkout mã nguồn
       - name: Checkout repository
         uses: actions/checkout@v3
 
-      # Bước 2: Thiết lập Python và cài đặt thư viện
+      # Bước 2: Thiết lập Python (để chạy DVC)
       - name: Set up Python
         uses: actions/setup-python@v4
         with:
           python-version: "3.12"
+
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
-          pip install dvc[gdrive]
+          pip install -r requirements.txt
 
-      # Bước 3: Pull mô hình mới nhất từ DVC remote
-      - name: Pull Model from DVC Remote
+      # Bước 3: Pull model mới nhất từ DVC
+      - name: Pull latest model from DVC
         run: |
-          dvc pull models/fine_tuned_gpt2
+          dvc pull models/fine_tuned_gpt2.dvc
+          ls -R models/
 
-      # Bước 4: Kiểm tra sự khác biệt trong mô hình
-      - name: Check for Model Changes
-        id: check_model
+      # Bước 4: Đăng nhập Heroku Container Registry
+      - name: Log in to Heroku Container Registry
+        env:
+          HEROKU_API_KEY: ${{ secrets.HEROKU_API_KEY }}
         run: |
-          dvc diff > model_diff.txt
-          if grep -q "models/fine_tuned_gpt2" model_diff.txt; then
-            echo "model_changed=true" >> $GITHUB_ENV
-          else
-            echo "model_changed=false" >> $GITHUB_ENV
+          echo $HEROKU_API_KEY | docker login --username=_ --password-stdin registry.heroku.com
 
-      # Bước 5: Deploy lại API nếu model thay đổi
-      - name: Deploy API
-        if: env.model_changed == 'true'
+      # Bước 5: Build và Push Docker Image
+      - name: Build and Push Docker Image
         run: |
-          echo "Model has changed. Deploying API..."
-          docker build -t gpt2-api .
-          docker run -d -p 8000:8000 gpt2-api
-      - name: Skip Deploy
-        if: env.model_changed == 'false'
-        run: echo "Model has not changed. Skipping API deployment."
+          docker build -t registry.heroku.com/${{ secrets.HEROKU_APP_NAME }}/web .
+          docker push registry.heroku.com/${{ secrets.HEROKU_APP_NAME }}/web
+
+      # Bước 6: Release ứng dụng trên Heroku
+      - name: Release App on Heroku
+        env:
+          HEROKU_API_KEY: ${{ secrets.HEROKU_API_KEY }}
+        run: |
+          heroku container:release web --app ${{ secrets.HEROKU_APP_NAME }}

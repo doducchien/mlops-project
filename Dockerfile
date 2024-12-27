@@ -1,11 +1,18 @@
-FROM python:3.9-slim
+# Sử dụng Python base image
+FROM python:3.12-slim
 
+# Thiết lập thư mục làm việc
 WORKDIR /app
 
-COPY requirements.txt requirements.txt
+# Sao chép file phụ thuộc và cài đặt
+COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
-COPY src/ src/
-COPY models/ models/
+# Sao chép toàn bộ mã nguồn
+COPY . .
 
-CMD ["uvicorn", "src.api:app", "--host", "0.0.0.0", "--port", "8000"]
+# Expose cổng 8000 (Heroku yêu cầu)
+EXPOSE 8000
+
+# Lệnh khởi chạy API
+CMD ["python", "src/api.py"]
