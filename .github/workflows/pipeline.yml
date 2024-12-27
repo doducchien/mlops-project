@@ -22,12 +22,18 @@ jobs:
       with:
         python-version: "3.12"
 
-    # Bước 3: Install DVC and dependencies
+    # Bước 3: Install dependencies
     - name: Install dependencies
       run: |
         python -m pip install --upgrade pip
         pip install -r requirements.txt
-
+    - name: Create credentials.json
+      env:
+        GDRIVE_CREDENTIALS: ${{ secrets.GDRIVE_CREDENTIALS }}
+      run: |
+        mkdir -p /app/credentials
+        echo "$GDRIVE_CREDENTIALS" > /app/credentials/credentials.json
+      
     # Bước 4: Install Heroku CLI
     - name: Install Heroku CLI
       run: |
