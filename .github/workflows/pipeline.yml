@@ -1,80 +1,51 @@
+name: Deploy API on Model Change
+
 on:
   push:
     branches:
-      - main
-  schedule:
-    # Chạy hàng ngày lúc 2:00 sáng UTC
-    - cron: "0 2 * * *"
+      - main  # Chạy workflow khi có thay đổi trên nhánh main
 
 jobs:
-  run-pipeline:
+  deploy-api:
     runs-on: ubuntu-latest
+
     steps:
-      - name: Check out repository
+      # Bước 1: Clone mã nguồn
+      - name: Checkout repository
         uses: actions/checkout@v3
 
+      # Bước 2: Thiết lập Python và cài đặt thư viện
       - name: Set up Python
         uses: actions/setup-python@v4
         with:
-          python-version: 3.12
-
+          python-version: "3.12"
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
-          pip install dvc
-          pip install -r requirements.txt
+          pip install dvc[gdrive]
 
-      - name: Ensure models directory exists
-        run: mkdir -p models/fine_tuned_gpt2
-      - name: Execute Pipeline Tasks
+      # Bước 3: Pull mô hình mới nhất từ DVC remote
+      - name: Pull Model from DVC Remote
         run: |
-          # Task 1: Check Data
-          if [[ $(dvc status) != "Data and pipelines are up to date." ]]; then
-            echo "Data has changed. Proceeding to fine-tune."
-            touch proceed_to_fine_tune
+          dvc pull models/fine_tuned_gpt2
+
+      # Bước 4: Kiểm tra sự khác biệt trong mô hình
+      - name: Check for Model Changes
+        id: check_model
+        run: |
+          dvc diff > model_diff.txt
+          if grep -q "models/fine_tuned_gpt2" model_diff.txt; then
+            echo "model_changed=true" >> $GITHUB_ENV
           else
-            echo "No changes in data. Skipping fine-tune."
-          fi
+            echo "model_changed=false" >> $GITHUB_ENV
 
-          # Task 2: Fine-Tune Model
-          if [[ -f "proceed_to_fine_tune" ]]; then
-            echo "Fine-tuning the model..."
-            python src/train_model.py
-
-          else
-            echo "Skipping fine-tune as no trigger file exists."
-          fi
-      - name: dvc
+      # Bước 5: Deploy lại API nếu model thay đổi
+      - name: Deploy API
+        if: env.model_changed == 'true'
         run: |
-          git config user.email "chiendd226@gmail.com"
-          git config user.name "beethoven"
-          dvc add models/fine_tuned_gpt2
-          git add models/fine_tuned_gpt2.dvc
-          git commit -m "Fine-tuned GPT-2 model updated with DVC"
-          git push origin main
-          dvc push
-
-  deploy-api:
-    needs: run-pipeline
-    runs-on: ubuntu-latest
-    steps:
-      - name: Check out repository
-        uses: actions/checkout@v3
-
-      - name: Build and Deploy API
-        run: |
-          echo "Building and deploying API..."
+          echo "Model has changed. Deploying API..."
           docker build -t gpt2-api .
           docker run -d -p 8000:8000 gpt2-api
-
-  monitor-model:
-    needs: deploy-api
-    runs-on: ubuntu-latest
-    steps:
-      - name: Check out repository
-        uses: actions/checkout@v3
-
-      - name: Monitor Model
-        run: |
-          echo "Monitoring the model..."
-          python src/monitoring.py
+      - name: Skip Deploy
+        if: env.model_changed == 'false'
+        run: echo "Model has not changed. Skipping API deployment."
