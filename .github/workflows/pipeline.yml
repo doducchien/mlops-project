@@ -5,7 +5,7 @@ on:
     branches:
       - main
     paths:
-      - models/fine_tuned_gpt2.dvc  # Trigger khi model thay đổi
+      - models/fine_tuned_gpt2.dvc
 
 jobs:
   deploy-api:
@@ -13,11 +13,9 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      # Bước 1: Checkout mã nguồn
       - name: Checkout repository
         uses: actions/checkout@v3
 
-      # Bước 2: Thiết lập Python (để chạy DVC)
       - name: Set up Python
         uses: actions/setup-python@v4
         with:
@@ -28,26 +26,29 @@ jobs:
           python -m pip install --upgrade pip
           pip install -r requirements.txt
 
-      # Bước 3: Pull model mới nhất từ DVC
+      - name: Create credentials.json
+        env:
+          GDRIVE_CREDENTIALS: ${{ secrets.GDRIVE_CREDENTIALS }}
+        run: |
+          mkdir -p /home/runner/work/mlops-project/ggdrive
+          echo "$GDRIVE_CREDENTIALS" > /home/runner/work/mlops-project/ggdrive/credentials.json
+
       - name: Pull latest model from DVC
         run: |
           dvc pull models/fine_tuned_gpt2.dvc
           ls -R models/
 
-      # Bước 4: Đăng nhập Heroku Container Registry
       - name: Log in to Heroku Container Registry
         env:
           HEROKU_API_KEY: ${{ secrets.HEROKU_API_KEY }}
         run: |
           echo $HEROKU_API_KEY | docker login --username=_ --password-stdin registry.heroku.com
 
-      # Bước 5: Build và Push Docker Image
       - name: Build and Push Docker Image
         run: |
           docker build -t registry.heroku.com/${{ secrets.HEROKU_APP_NAME }}/web .
           docker push registry.heroku.com/${{ secrets.HEROKU_APP_NAME }}/web
 
-      # Bước 6: Release ứng dụng trên Heroku
       - name: Release App on Heroku
         env:
           HEROKU_API_KEY: ${{ secrets.HEROKU_API_KEY }}
