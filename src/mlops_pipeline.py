@@ -119,13 +119,13 @@ def monitor_model():
 @flow(name="MLOps Pipeline")
 def mlops_pipeline():
     # Step 1: Fetch dataset
-    # raw_data_path = fetch_dataset()
+    raw_data_path = fetch_dataset()
     
     # Step 2: Preprocess data
-    # processed_data_path = preprocess_data(raw_data_path)
+    processed_data_path = preprocess_data(raw_data_path)
     
     # Step 3: Fine-tune the model
-    # model_path = fine_tune_model(processed_data_path)
+    model_path = fine_tune_model(processed_data_path)
     
     # Step 4: Track data and model with DVC
     # track_with_dvc(processed_data_path, model_path)
