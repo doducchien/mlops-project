@@ -39,7 +39,12 @@ jobs:
         HEROKU_API_KEY: ${{ secrets.HEROKU_API_KEY }}
       run: |
         echo $HEROKU_API_KEY | docker login --username=_ --password-stdin registry.heroku.com
-
+        
+    - name: Set Heroku Stack  
+      run: heroku stack:set container -a ${{ secrets.HEROKU_APP_NAME }}
+      env:
+        HEROKU_API_KEY: ${{ secrets.HEROKU_API_KEY }}
+  
     # Bước 6: Build and Push Docker Image
     - name: Build and Push Docker Image
       run: |

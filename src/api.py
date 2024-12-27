@@ -1,30 +1,47 @@
-from fastapi import FastAPI, HTTPException
-from pydantic import BaseModel
+import os
+import subprocess
+from fastapi import FastAPI
 from transformers import GPT2LMHeadModel, GPT2Tokenizer
 
-app = FastAPI()
-
+# Path to model
 MODEL_PATH = "models/fine_tuned_gpt2"
 
-try:
+# Pull the latest model from DVC
+def pull_latest_model():
+    try:
+        print("Pulling the latest model from DVC...")
+        subprocess.run(["dvc", "pull", f"{MODEL_PATH}.dvc"], check=True)
+        print("Model pulled successfully.")
+    except subprocess.CalledProcessError as e:
+        print(f"Error pulling model: {e}")
+        raise RuntimeError("Failed to pull the latest model from DVC.")
+
+# Load model and tokenizer
+def load_model():
+    print(f"Loading model from {MODEL_PATH}...")
     model = GPT2LMHeadModel.from_pretrained(MODEL_PATH)
     tokenizer = GPT2Tokenizer.from_pretrained(MODEL_PATH)
-except Exception as e:
-    raise RuntimeError(f"Failed to load model: {e}")
+    print("Model and tokenizer loaded successfully.")
+    return model, tokenizer
 
-class InputText(BaseModel):
-    text: str
+# FastAPI setup
+app = FastAPI()
 
-@app.get("/")
-def health_check():
-    return {"message": "API is running successfully!"}
+# Global variables to store model and tokenizer
+model = None
+tokenizer = None
+
+@app.on_event("startup")
+def startup_event():
+    global model, tokenizer
+    print("Starting up API...")
+    pull_latest_model()  # Pull the latest model
+    model, tokenizer = load_model()  # Load the model and tokenizer
 
 @app.post("/predict")
-def predict(input_text: InputText):
-    try:
-        inputs = tokenizer.encode(input_text.text, return_tensors="pt")
-        outputs = model.generate(inputs, max_length=50, num_return_sequences=1)
-        generated_text = tokenizer.decode(outputs[0], skip_special_tokens=True)
-        return {"generated_text": generated_text}
-    except Exception as e:
-        raise HTTPException(status_code=500, detail=f"Error generating text: {e}")
+def predict(input_text: str):
+    global model, tokenizer
+    inputs = tokenizer.encode(input_text, return_tensors="pt")
+    outputs = model.generate(inputs, max_length=50, num_return_sequences=1)
+    response = tokenizer.decode(outputs[0], skip_special_tokens=True)
+    return {"generated_text": response}
