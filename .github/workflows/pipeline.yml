@@ -1,11 +1,11 @@
-name: Deploy API on Heroku
+name: Deploy API on Heroku123
 
 on:
   push:
     branches:
       - main
-    paths:
-      - models/fine_tuned_gpt2.dvc  # Trigger chỉ khi file .dvc thay đổi
+    # paths:
+    #   - models/fine_tuned_gpt2.dvc  # Trigger chỉ khi file .dvc thay đổi
 
 jobs:
   deploy-api:
