@@ -29,10 +29,10 @@ jobs:
         pip install -r requirements.txt
 
 
-    - name: Create credentials.json
-      run: |
-        mkdir -p ggdrive
-        echo "${{ secrets.GDRIVE_CREDENTIALS_JSON }}" > ggdrive/credentials.json
+    # - name: Create credentials.json
+    #   run: |
+    #     mkdir -p ggdrive
+    #     echo "${{ secrets.GDRIVE_CREDENTIALS_JSON }}" > ggdrive/credentials.json
 
     # - name: Create credentials.json
     #   env:
