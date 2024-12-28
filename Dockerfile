@@ -8,7 +8,7 @@ WORKDIR /app/src
 COPY requirements.txt requirements.txt
 
 # Cài đặt thư viện cần thiết
-RUN pip install --no-cache-dir fastapi transformers uvicorn torch tensorflow
+RUN pip install --no-cache-dir fastapi transformers uvicorn torch tensorflow dvc[gdrive]
 
 # Sao chép toàn bộ mã nguồn vào container
 COPY . .
