@@ -75,7 +75,7 @@ jobs:
       run: |
         docker buildx build \
           --platform linux/amd64 \
-          --build-arg GDRIVE_CREDENTIALS_JSON=/"${{ secrets.GDRIVE_CREDENTIALS_JSON }}" \
+          --build-arg GDRIVE_CREDENTIALS_JSON=/${{ secrets.GDRIVE_CREDENTIALS_JSON }} \
           --tag registry.heroku.com/${{ secrets.HEROKU_APP_NAME }}/web:latest \
           --push .
 
