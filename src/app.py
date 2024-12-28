@@ -16,7 +16,7 @@ logger = logging.getLogger(__name__)
 os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = "/tmp/credentials/credentials.json"
 
 # Path to model
-MODEL_PATH = "../models/fine_tuned_gpt2"
+MODEL_PATH = "app/src/models/fine_tuned_gpt2"
 # Pull the latest model from DVC
 def pull_latest_model():
     try:
