@@ -66,12 +66,18 @@ jobs:
         HEROKU_API_KEY: ${{ secrets.HEROKU_API_KEY }}
   
     - name: Build and Push Docker Image
+      # run: |
+      #   docker build \
+      #     -t registry.heroku.com/${{ secrets.HEROKU_APP_NAME }}/web \
+      #     --build-arg GDRIVE_CREDENTIALS_JSON="${{ secrets.GDRIVE_CREDENTIALS_JSON }}" \
+      #     .
+      #   docker push registry.heroku.com/${{ secrets.HEROKU_APP_NAME }}/web
       run: |
-        docker build \
-          -t registry.heroku.com/${{ secrets.HEROKU_APP_NAME }}/web \
-          --build-arg GDRIVE_CREDENTIALS_JSON="${{ secrets.GDRIVE_CREDENTIALS_JSON }}" \
-          .
-        docker push registry.heroku.com/${{ secrets.HEROKU_APP_NAME }}/web
+        docker buildx build \
+          --platform linux/amd64 \
+          --build-arg GDRIVE_CREDENTIALS_PATH=/app/ggdrive/credentials.json \
+          --tag registry.heroku.com/${{ secrets.HEROKU_APP_NAME }}/web:latest \
+          --push .
 
       # Bước 8: Release App on Heroku
     - name: Release API on Heroku
