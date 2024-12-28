@@ -1,0 +1,42 @@
+# Ignore DVC files and data
+.dvc/
+.dvcignore
+
+# Ignore Git repository files
+.git/
+.gitignore
+
+# Ignore Python bytecode and cache files
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Ignore test files and logs
+test/
+*.log
+debug_log.txt
+
+# Ignore large datasets or results (not needed for runtime)
+data/
+results/
+
+# Ignore Google Drive-related files
+ggdrive/
+
+# Ignore virtual environments
+venv/
+chiendd226/
+*.egg-info/
+
+# Ignore editor and IDE temporary files
+.vscode/
+*.swp
+*.swo
+*.idea/
+*.DS_Store
+*.bak
+*.tmp
+
+# Ignore pipeline-related configuration (if not needed)
+.github/

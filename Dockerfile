@@ -1,18 +1,20 @@
-# Sử dụng Python base image
+# Sử dụng image Python nhẹ
 FROM python:3.12-slim
 
-# Thiết lập thư mục làm việc
-WORKDIR /app
+# Đặt thư mục làm việc
+WORKDIR /app/src
 
-# Sao chép file phụ thuộc và cài đặt
-COPY requirements.txt .
-RUN pip install --no-cache-dir -r requirements.txt
+# Sao chép file yêu cầu vào container
+COPY requirements.txt requirements.txt
 
-# Sao chép toàn bộ mã nguồn
+# Cài đặt thư viện cần thiết
+RUN pip install --no-cache-dir fastapi transformers uvicorn
+
+# Sao chép toàn bộ mã nguồn vào container
 COPY . .
 
-# Expose cổng 8000 (Heroku yêu cầu)
+# Expose cổng 8000
 EXPOSE 8000
 
-# Lệnh khởi chạy API
-CMD ["python", "src/app.py"]
+# Lệnh khởi chạy ứng dụng
+CMD ["uvicorn", "src.app:app", "--host", "0.0.0.0", "--port", "8000"]
