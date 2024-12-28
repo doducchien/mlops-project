@@ -62,10 +62,7 @@ jobs:
     - name: Build and Push Docker Image
       run: |
         echo "${{ secrets.GDRIVE_CREDENTIALS_JSON }}" > credentials.json
-        docker build \
-          -t registry.heroku.com/${{ secrets.HEROKU_APP_NAME }}/web \
-          --build-arg GDRIVE_CREDENTIALS_JSON="${{ secrets.GDRIVE_CREDENTIALS_JSON }}" \
-          .
+        docker build -t registry.heroku.com/${{ secrets.HEROKU_APP_NAME }}/web --build-arg GDRIVE_CREDENTIALS_JSON="${{ secrets.GDRIVE_CREDENTIALS_JSON }}" .
         docker push registry.heroku.com/${{ secrets.HEROKU_APP_NAME }}/web
     
 
