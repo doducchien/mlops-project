@@ -42,9 +42,7 @@ jobs:
     #     echo "$GDRIVE_CREDENTIALS" > /tmp/credentials/credentials.json
     - name: Debug Secrets
       run: |
-        echo "HEROKU_APP_NAME: ${{ secrets.HEROKU_API_KEY }}"
         echo "HEROKU_APP_NAME: ${{ secrets.HEROKU_APP_NAME }}"
-        echo "GDRIVE_CREDENTIALS_JSON: ${{ secrets.GDRIVE_CREDENTIALS_JSON }}..."
   
       
     # Bước 4: Install Heroku CLI
