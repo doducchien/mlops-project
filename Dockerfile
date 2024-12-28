@@ -15,4 +15,4 @@ COPY . .
 EXPOSE 8000
 
 # Lệnh khởi chạy API
-CMD ["python", "src/api.py"]
+CMD ["python", "src/app.py"]

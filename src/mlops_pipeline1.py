@@ -1,6 +1,6 @@
 from src.data_processing import fetch_dataset, preprocess_data
 from src.train_model import fine_tune_model
-from src.api import deploy_model
+from app import deploy_model
 from src.util import track_with_dvc
 
 def mlops_pipeline():
