@@ -66,10 +66,12 @@ jobs:
         HEROKU_API_KEY: ${{ secrets.HEROKU_API_KEY }}
   
     - name: Build and Push Docker Image
+      env:
+        GDRIVE_CREDENTIALS_JSON: ${{ secrets.GDRIVE_CREDENTIALS_JSON }}
       run: |
         docker build \
           -t registry.heroku.com/${{ secrets.HEROKU_APP_NAME }}/web \
-          --build-arg GDRIVE_CREDENTIALS_JSON=123 \
+          --build-arg GDRIVE_CREDENTIALS_JSON=$GDRIVE_CREDENTIALS_JSON \
           .
         docker push registry.heroku.com/${{ secrets.HEROKU_APP_NAME }}/web
       # run: |
