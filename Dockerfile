@@ -17,8 +17,8 @@ COPY . .
 # EXPOSE 8080
 
 # Create ggdrive folder and credentials.json
-ARG GDRIVE_CREDENTIALS
+ARG GDRIVE_CREDENTIALS_JSON
 RUN mkdir -p ggdrive && \
-    echo "$GDRIVE_CREDENTIALS" > ggdrive/credentials.json
+    echo "$GDRIVE_CREDENTIALS_JSON" > ggdrive/credentials.json
 # Lệnh khởi chạy ứng dụng
 CMD [ "sh", "-c", "uvicorn src.app:app --host=0.0.0.0 --port=${PORT:-8000}" ]
