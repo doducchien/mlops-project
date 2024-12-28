@@ -1,4 +1,4 @@
-name: Deploy API 3212131
+name: Deploy API on Heroku123iii
 
 on:
   push:
@@ -9,6 +9,7 @@ on:
 
 jobs:
   deploy-api:
+    environment: myEnironmentName
     runs-on: ubuntu-latest
 
     steps:
@@ -21,10 +22,6 @@ jobs:
       uses: actions/setup-python@v4
       with:
         python-version: "3.12"
-    - name: Debug Secrets
-      run: |
-        echo "HEROKU_APP_NAME_1: ${{ secrets.HEROKU_APP_NAME_1 }}"
-    
 
     # Bước 3: Install dependencies
     - name: Install dependencies
@@ -44,9 +41,11 @@ jobs:
     #   run: |
     #     mkdir -p /tmp/credentials
     #     echo "$GDRIVE_CREDENTIALS" > /tmp/credentials/credentials.json
-    # - name: Debug Secrets
-    #   run: |
-    #     echo "HEROKU_APP_NAME: ${{ secrets.HEROKU_APP_NAME_1 }}"
+    - name: Debug Secrets
+      run: |
+        echo "HEROKU_APP_NAME: ${{ secrets.HEROKU_API_KEY }}"
+        echo "HEROKU_APP_NAME: ${{ secrets.HEROKU_APP_NAME }}"
+        echo "GDRIVE_CREDENTIALS_JSON: ${{ secrets.GDRIVE_CREDENTIALS_JSON }}..."
   
       
     # Bước 4: Install Heroku CLI
@@ -62,22 +61,22 @@ jobs:
         echo $HEROKU_API_KEY | docker login --username=_ --password-stdin registry.heroku.com
 
     - name: Set Heroku Stack  
-      run: heroku stack:set container -a ${{ secrets.HEROKU_APP_NAME_1 }}
+      run: heroku stack:set container -a ${{ secrets.HEROKU_APP_NAME }}
       env:
         HEROKU_API_KEY: ${{ secrets.HEROKU_API_KEY }}
   
     - name: Build and Push Docker Image
       run: |
         docker build \
-          -t registry.heroku.com/${{ secrets.HEROKU_APP_NAME_1 }}/web \
+          -t registry.heroku.com/${{ secrets.HEROKU_APP_NAME }}/web \
           --build-arg GDRIVE_CREDENTIALS_JSON="${{ secrets.GDRIVE_CREDENTIALS_JSON }}" \
           .
-        docker push registry.heroku.com/${{ secrets.HEROKU_APP_NAME_1 }}/web
+        docker push registry.heroku.com/${{ secrets.HEROKU_APP_NAME }}/web
 
       # Bước 8: Release App on Heroku
     - name: Release API on Heroku
       env:
         HEROKU_API_KEY: ${{ secrets.HEROKU_API_KEY }}
       run: |
-        heroku stack:set container -a ${{ secrets.HEROKU_APP_NAME_1 }}
-        heroku container:release web -a ${{ secrets.HEROKU_APP_NAME_1 }}
+        heroku stack:set container -a ${{ secrets.HEROKU_APP_NAME }}
+        heroku container:release web -a ${{ secrets.HEROKU_APP_NAME }}
