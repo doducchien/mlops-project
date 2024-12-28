@@ -13,7 +13,7 @@ class InputText(BaseModel):
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 # Cấu hình đường dẫn credentials cho Google Drive
-os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = "/tmp/credentials/credentials.json"
+# os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = "/tmp/credentials/credentials.json"
 
 # Path to model
 MODEL_PATH = "models/fine_tuned_gpt2"

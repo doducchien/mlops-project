@@ -67,7 +67,7 @@ jobs:
       run: |
         docker build \
           -t registry.heroku.com/${{ secrets.HEROKU_APP_NAME }}/web \
-          --build-arg GDRIVE_CREDENTIALS_JSON="${{ secrets.GDRIVE_CREDENTIALS_JSON }}" \
+          --build-arg GDRIVE_CREDENTIALS="${{ secrets.GDRIVE_CREDENTIALS }}" \
           .
         docker push registry.heroku.com/${{ secrets.HEROKU_APP_NAME }}/web
 
