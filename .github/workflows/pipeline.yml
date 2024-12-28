@@ -1,4 +1,4 @@
-name: Deploy API on Heroku1234
+name: Deploy API on Heroku123
 
 on:
   push:
@@ -61,7 +61,9 @@ jobs:
   
     - name: Build and Push Docker Image
       run: |
-        docker buildx build --push -t registry.heroku.com/${{ secrets.HEROKU_APP_NAME }}/web --build-arg GDRIVE_CREDENTIALS_JSON="${{ secrets.GDRIVE_CREDENTIALS_JSON }}" .
+        docker build \
+          --build-arg GDRIVE_CREDENTIALS_JSON="${{ secrets.GDRIVE_CREDENTIALS_JSON }}" \
+          -t registry.heroku.com/${{ secrets.HEROKU_APP_NAME }}/web .
         docker push registry.heroku.com/${{ secrets.HEROKU_APP_NAME }}/web
 
       # Bước 8: Release App on Heroku
