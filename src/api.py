@@ -4,16 +4,15 @@ from fastapi import FastAPI
 from transformers import GPT2LMHeadModel, GPT2Tokenizer
 from contextlib import asynccontextmanager
 
-# Paths
+# Cấu hình đường dẫn credentials cho Google Drive
+os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = "/tmp/credentials/credentials.json"
+
+# Path to model
 MODEL_PATH = "models/fine_tuned_gpt2"
-CREDENTIALS_PATH = "/app/credentials/credentials.json"  # Default path for credentials
 
 # Pull the latest model from DVC
 def pull_latest_model():
     try:
-        # Set up the environment variable for DVC to find Google Drive credentials
-        os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = CREDENTIALS_PATH
-        print(f"Using credentials from: {CREDENTIALS_PATH}")
         print("Pulling the latest model from DVC...")
         subprocess.run(["dvc", "pull", f"{MODEL_PATH}.dvc"], check=True)
         print("Model pulled successfully.")
