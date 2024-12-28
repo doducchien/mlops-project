@@ -27,12 +27,19 @@ jobs:
       run: |
         python -m pip install --upgrade pip
         pip install -r requirements.txt
+
+
     - name: Create credentials.json
-      env:
-        GDRIVE_CREDENTIALS: ${{ secrets.GDRIVE_CREDENTIALS }}
       run: |
         mkdir -p /tmp/credentials
-        echo "$GDRIVE_CREDENTIALS" > /tmp/credentials/credentials.json
+        echo "${{ secrets.GDRIVE_CREDENTIALS }}" > /tmp/credentials/credentials.json
+
+    # - name: Create credentials.json
+    #   env:
+    #     GDRIVE_CREDENTIALS: ${{ secrets.GDRIVE_CREDENTIALS }}
+    #   run: |
+    #     mkdir -p /tmp/credentials
+    #     echo "$GDRIVE_CREDENTIALS" > /tmp/credentials/credentials.json
       
       
     # Bước 4: Install Heroku CLI
