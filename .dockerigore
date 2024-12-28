@@ -1,6 +1,6 @@
-# Ignore DVC files and data
+<!-- # Ignore DVC files and data
 .dvc/
-.dvcignore
+.dvcignore -->
 
 # Ignore Git repository files
 .git/
