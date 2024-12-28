@@ -31,8 +31,8 @@ jobs:
 
     - name: Create credentials.json
       run: |
-        mkdir -p /tmp/credentials
-        echo "${{ secrets.GDRIVE_CREDENTIALS }}" > /tmp/credentials/credentials.json
+        mkdir -p ggdrive
+        echo "${{ secrets.GDRIVE_CREDENTIALS_JSON }}" > ggdrive/credentials.json
 
     # - name: Create credentials.json
     #   env:

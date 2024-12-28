@@ -28,13 +28,13 @@ def fine_tune_model(processed_data_path):
     tokenizer = GPT2Tokenizer.from_pretrained("gpt2")
     tokenizer.pad_token = tokenizer.eos_token
 
-    encodings = tokenizer(processed_data[:200], truncation=True, padding=True, max_length=10, return_tensors="pt")
+    encodings = tokenizer(processed_data[:140], truncation=True, padding=True, max_length=10, return_tensors="pt")
     encodings["labels"] = encodings["input_ids"].clone()  # Thêm nhãn để mô hình tính loss
     dataset = CustomDataset(encodings)
 
     training_args = TrainingArguments(
         output_dir="results",
-        num_train_epochs=2,
+        num_train_epochs=1,
         per_device_train_batch_size=4,
         save_steps=500,
         save_total_limit=2,
