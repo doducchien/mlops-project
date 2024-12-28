@@ -9,7 +9,7 @@ on:
 
 jobs:
   deploy-api:
-    environment: myEnironmentName
+    # environment: myEnironmentName
     runs-on: ubuntu-latest
 
     steps:
@@ -41,11 +41,11 @@ jobs:
     #   run: |
     #     mkdir -p /tmp/credentials
     #     echo "$GDRIVE_CREDENTIALS" > /tmp/credentials/credentials.json
-    - name: Debug Secrets
-      run: |
-        echo "HEROKU_APP_NAME: ${{ secrets.HEROKU_API_KEY }}..."
-        echo "HEROKU_APP_API: ${{ secrets.HEROKU_APP_NAME }}..."
-        echo "GDRIVE_CREDENTIALS_JSON: ${{ secrets.GDRIVE_CREDENTIALS_JSON }}..."
+    # - name: Debug Secrets
+    #   run: |
+    #     echo "HEROKU_APP_NAME: ${{ secrets.HEROKU_API_KEY }}..."
+    #     echo "HEROKU_APP_API: ${{ secrets.HEROKU_APP_NAME }}..."
+    #     echo "GDRIVE_CREDENTIALS_JSON: ${{ secrets.GDRIVE_CREDENTIALS_JSON }}..."
   
       
     # Bước 4: Install Heroku CLI
