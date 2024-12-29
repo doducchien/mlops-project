@@ -14,7 +14,8 @@ RUN pip install --no-cache-dir fastapi transformers uvicorn torch tensorflow dvc
 COPY . .
 
 # Copy the credentials.json file
-COPY ./ggdrive/credentials.json ggdrive/credentials.json
+COPY ggdrive/credentials.json ggdrive/credentials.json
+COPY ggdrive/credentials.json ggdrive1/credentials.json
 
 # Create ggdrive folder and credentials.json
 # ARG GDRIVE_CREDENTIALS_JSON
