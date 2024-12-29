@@ -13,8 +13,8 @@ RUN pip install --no-cache-dir fastapi transformers uvicorn torch tensorflow dvc
 # Sao chép toàn bộ mã nguồn vào container
 COPY . .
 
-# Expose cổng 8000
-# EXPOSE 8080
+# Copy the credentials.json file
+COPY ./ggdrive/credentials.json ggdrive/credentials.json
 
 # Create ggdrive folder and credentials.json
 ARG GDRIVE_CREDENTIALS_JSON
