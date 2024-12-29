@@ -68,6 +68,7 @@ jobs:
 
     - name: Write GDrive Credentials JSON
       run: |
+        mkdir -p ggdrive
         echo "${{ secrets.GDRIVE_CREDENTIALS_JSON }}" > ggdrive/credentials.json
   
   
