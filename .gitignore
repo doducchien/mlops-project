@@ -26,3 +26,6 @@ Thumbs.db
 
 ggdrive/credentials.json
 .env
+
+
+mlruns/

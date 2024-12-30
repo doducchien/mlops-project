@@ -1,10 +1,20 @@
-import subprocess
+import pandas as pd
 
-def track_with_dvc(data_path, model_path):
-    print("Tracking files with DVC...")
-    subprocess.run(["dvc", "add", data_path], check=True)
-    subprocess.run(["dvc", "add", model_path], check=True)
-    subprocess.run(["git", "add", f"{data_path}.dvc", f"{model_path}.dvc", ".gitignore"], check=True)
-    subprocess.run(["git", "commit", "-m", "Track data and model with DVC"], check=True)
-    subprocess.run(["dvc", "push"], check=True)
-    print("DVC tracking and push complete.")
+def preprocess_data(dataframe, columns_to_keep):
+    """
+    Hàm xử lý dữ liệu: Lọc các cột cần thiết và xóa các giá trị null.
+    
+    Args:
+        dataframe (pd.DataFrame): DataFrame đầu vào.
+        columns_to_keep (list): Danh sách các cột cần giữ lại.
+
+    Returns:
+        pd.DataFrame: DataFrame đã được xử lý.
+    """
+    # Lọc các cột cần thiết
+    filtered_df = dataframe[columns_to_keep]
+    # Loại bỏ các hàng có giá trị null
+    cleaned_df = filtered_df.dropna()
+    # Ép kiểu dữ liệu về dạng nguyên gốc (nếu cần thiết)
+    cleaned_df = cleaned_df.astype(dataframe[columns_to_keep].dtypes)
+    return cleaned_df

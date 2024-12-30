@@ -12,8 +12,7 @@ class InputText(BaseModel):
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
-# Cấu hình đường dẫn credentials cho Google Drive
-# os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = "/tmp/credentials/credentials.json"
+
 
 # Path to model
 MODEL_PATH = "models/fine_tuned_gpt2"
@@ -69,12 +68,3 @@ async def predict(payload: InputText):
     outputs = model.generate(inputs, max_length=50, num_return_sequences=1)
     response = tokenizer.decode(outputs[0], skip_special_tokens=True)
     return {"generated_text": response}
-
-
-# from fastapi import FastAPI
-
-# app = FastAPI()
-
-# @app.get("/")
-# def read_root():
-#     return {"message": "Hello World"}
