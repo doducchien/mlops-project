@@ -5,3 +5,5 @@ fastapi
 uvicorn
 prefect
 dvc[gdrive]
+pytest
+mlflow
