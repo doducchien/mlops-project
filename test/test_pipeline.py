@@ -21,7 +21,7 @@ class TestPreprocessData(unittest.TestCase):
         # Kết quả mong đợi
         expected_data = {
             "name": ["Alice", "Bob1"],
-            "age": [25.0, 300.0]
+            "age": [25.0, 30.0]
         }
         expected_df = pd.DataFrame(expected_data)
 

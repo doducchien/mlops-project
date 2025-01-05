@@ -11,7 +11,11 @@ MODEL_SAVE_PATH = "models/fine_tuned_gpt2"
 os.makedirs(os.path.dirname(MODEL_SAVE_PATH), exist_ok=True)
 
 print(f"Model will be saved to: {MODEL_SAVE_PATH}")
-
+EPOCH = int(os.getenv("EPOCH", 1))
+per_device_train_batch_size = int(os.getenv("per_device_train_batch_size", 1))
+save_steps = int(os.getenv('save_steps', 200))
+save_total_limit = int(os.getenv('save_total_limit', 2))
+logging_steps = int(os.getenv('logging_steps', 10))
 class CustomDataset(Dataset):
     def __init__(self, encodings):
         self.encodings = encodings
@@ -35,18 +39,18 @@ def fine_tune_model(processed_data_path):
         tokenizer = GPT2Tokenizer.from_pretrained("gpt2")
         tokenizer.pad_token = tokenizer.eos_token
 
-        encodings = tokenizer(processed_data[:10000], truncation=True, padding=True, max_length=10, return_tensors="pt")
+        encodings = tokenizer(processed_data[:123], truncation=True, padding=True, max_length=10, return_tensors="pt")
         encodings["labels"] = encodings["input_ids"].clone()  # Thêm nhãn để mô hình tính loss
         dataset = CustomDataset(encodings)
 
         training_args = TrainingArguments(
             output_dir="results",
-            num_train_epochs=3,
-            per_device_train_batch_size=4,
-            save_steps=500,
-            save_total_limit=2,
+            num_train_epochs=EPOCH,
+            per_device_train_batch_size=per_device_train_batch_size,
+            save_steps=save_steps,
+            save_total_limit=save_total_limit,
             logging_dir="logs",
-            logging_steps=10,  # Log số liệu mỗi 10 bước
+            logging_steps=logging_steps,  # Log số liệu mỗi 10 bước
             report_to=["mlflow"],  # Tích hợp trực tiếp với MLflow
         )
 
@@ -59,7 +63,7 @@ def fine_tune_model(processed_data_path):
         )
 
         # Log các tham số vào MLflow
-        mlflow.log_param("epochs", 3)
+        mlflow.log_param("epochs", EPOCH)
         mlflow.log_param("batch_size", 4)
         mlflow.log_param("max_length", 10)
 
